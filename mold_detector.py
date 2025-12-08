@@ -435,8 +435,8 @@ class MoldDetector:
 def main():
     """Main execution function."""
     # Configuration
-    input_dir = r"c:\Users\minja\Documents\CSE455 My TEST\Photos-Mold"
-    output_dir = r"c:\Users\minja\Documents\CSE455 My TEST\Mold_Detection_Results"
+    input_dir = "resources/Photos-Mold"
+    output_dir = "resources/Mold_Detection_Results"
     
     # Create detector
     detector = MoldDetector(input_dir, output_dir)
