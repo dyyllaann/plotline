@@ -1,3 +1,5 @@
+import numpy as np
+
 # Distance from c1 center to c2 center
 def circle_distance(c1, c2):
     x1, y1 = c1.center
@@ -33,3 +35,5 @@ def check_accuracy(c1, c2):
         return True
 
     return False
+
+
