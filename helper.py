@@ -11,8 +11,14 @@ def run(mode, dataloader, model, optimizer=None, use_cuda = True):
     """
     mode: either "train", "valid", or "test". If the mode is train, we will optimize the model
     """
+    device = torch.device("cuda" if use_cuda and torch.cuda.is_available() else "cpu")
+
     running_loss = []
-    criterion = nn.CrossEntropyLoss()
+    class_weights = torch.tensor([1/0.7, 1/0.3], device=device)
+    if use_cuda:
+        class_weights = class_weights.to(device)
+
+    criterion = nn.CrossEntropyLoss(weight=class_weights)
 
     actual_labels = []
     predictions = []

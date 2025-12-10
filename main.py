@@ -115,7 +115,7 @@ if __name__ == "__main__":
     best_model_path = f"best_{args.model}.pt"
 
     learning_rate = 1e-3
-    optimizer = optim.Adam(net.parameters(), lr=learning_rate, weight_decay=5e-3)
+    optimizer = optim.Adam(net.parameters(), lr=learning_rate, weight_decay=1e-4)
     
     train_losses = []
     valid_losses = []
