@@ -3,6 +3,7 @@ import argparse
 import numpy as np
 import torch
 import torch.optim as optim
+import matplotlib.pyplot as plt
 
 import loader
 import helper
@@ -85,7 +86,7 @@ if __name__ == "__main__":
     
     print("Use %s transformer for training" % args.transform)
     if args.transform == "basic":
-        train_transform = valid_transform = model.basic_transformer
+        train_transform = valid_transform = test_transform = model.basic_transformer
     elif args.transform == "norm":
         train_transform = model.norm_transformer
         valid_transform = model.norm_transformer
@@ -108,15 +109,20 @@ if __name__ == "__main__":
     
     
     # %%
+    best_valid_acc = 0
+    patience = 10
+    patience_counter = 0
+    best_model_path = f"best_{args.model}.pt"
+
+    learning_rate = 1e-3
+    optimizer = optim.Adam(net.parameters(), lr=learning_rate, weight_decay=5e-3)
+    
     train_losses = []
     valid_losses = []
     train_accs = []
     valid_accs = []
     for epoch in range(args.epoch):  # loop over the dataset multiple times
         print(f"\nEpoch {epoch+1} / {args.epoch}")
-        learning_rate = 0.01 * 0.8 ** epoch
-        learning_rate = max(learning_rate, 1e-6)
-        optimizer = optim.SGD(net.parameters(), lr=learning_rate, momentum=0.9)
     
         loss, acc = helper.run("train", trainloader, net, optimizer, use_cuda=use_cuda)
         train_losses.append(loss)
@@ -125,9 +131,24 @@ if __name__ == "__main__":
             loss, acc = helper.run("valid", validloader, net, use_cuda=use_cuda)
             valid_losses.append(loss)
             valid_accs.append(acc)
+        
+        if acc > best_valid_acc:
+            print(f"  ✓ Validation accuracy improved: {best_valid_acc:.4f} → {acc:.4f} (saving model)")
+            best_valid_acc = acc
+            torch.save(net.state_dict(), best_model_path)
+            patience_counter = 0
+        else:
+            patience_counter += 1
     
+        if patience_counter >= patience:
+            break
     
     print("-"*60)
     print("best validation accuracy is %.4f percent" % (np.max(valid_accs) * 100) )
-    
-    torch.save(net.state_dict(), "NN.pt")  # save the model for future reference
+
+    print("-"*60)
+    print("best train accuracy is %.4f percent" % (np.max(train_accs) * 100) )
+
+    net.load_state_dict(torch.load(best_model_path))
+    with torch.no_grad():
+        loss, acc = helper.run("test", testloader, net, use_cuda=use_cuda)

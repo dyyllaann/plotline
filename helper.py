@@ -7,18 +7,12 @@ import tqdm
 import numpy as np
 
 
-def run(mode, dataloader, model, optimizer=None, use_cuda=True, class_weights=None):
+def run(mode, dataloader, model, optimizer=None, use_cuda = True):
     """
-    mode: either "train" or "valid". If the mode is train, we will optimize the model
-    class_weights: optional tensor of weights for each class to handle imbalance
+    mode: either "train", "valid", or "test". If the mode is train, we will optimize the model
     """
     running_loss = []
-    
-    # Use weighted loss if provided
-    if class_weights is not None:
-        criterion = nn.CrossEntropyLoss(weight=class_weights)
-    else:
-        criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss()
 
     actual_labels = []
     predictions = []

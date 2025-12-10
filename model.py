@@ -41,17 +41,16 @@ class SimpleCNN(nn.Module):
 
 
 # %%
-basic_transformer = transforms.Compose([transforms.Resize((30, 30)), transforms.ToTensor()])
+basic_transformer = transforms.Compose([transforms.ToTensor()])
 
 norm_transformer = transforms.Compose([
-    transforms.Resize((30, 30)),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
 
 """Add random data augmentation to the transformer"""
 aug_transformer = transforms.Compose([
-    transforms.Resize((30, 30)),
+    transforms.Resize((224, 224)),
     transforms.RandomHorizontalFlip(p = 0.5),
     transforms.RandomAffine(degrees = 5, shear = 10),
     transforms.ToTensor(),
@@ -65,7 +64,7 @@ class DeepCNN(nn.Module):
         super(DeepCNN, self).__init__()
 
         num_channels = 3
-        size = 30
+        size = 224
         layers = []
 
         for a in arr:

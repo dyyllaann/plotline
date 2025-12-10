@@ -9,7 +9,7 @@ from mold_detector import MoldDetector
 
 INPUT_DIR = "resources/Photos-Mold"
 OUTPUT_DIR = "resources/Mold_Patches"
-MIN_AREA = 10000
+MIN_AREA = 2500
 PATCH_SIZE = 224
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
